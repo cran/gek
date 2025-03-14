@@ -1,0 +1,21 @@
+importFrom("stats", "as.formula", "deriv", ".lm.fit", "model.frame", "model.matrix.default", "model.matrix",
+	"terms", "model.response", "get_all_vars", "reformulate", "coef", "formula", "delete.response", 
+	"predict", "simulate", 
+	"runif", "rnorm", "optim", "optimise")
+importFrom("graphics", "segments", "par")
+import("dfoptim")
+useDynLib(gek)
+export("gekm", "derivModelMatrix", "blockCor", "blockCor.default", "blockChol", "tangents",
+	"camel3", "camel3Grad", "camel6", "camel6Grad", "branin", "braninGrad", "himmelblau", "himmelblauGrad",
+	"borehole", "boreholeGrad", "sulfur", "sulfurGrad", "banana", "bananaGrad", "sphere", "sphereGrad", "cigar", "cigarGrad", 
+	"schwefel", "schwefelGrad", "rastrigin", "rastriginGrad", "styblinski", "styblinskiGrad",
+	"griewank", "griewankGrad", "qing", "qingGrad", "short", "shortGrad", "steel", "steelGrad")
+S3method(print, gekm)
+S3method(predict, gekm)
+S3method(simulate, gekm)
+S3method(formula, gekm)
+S3method(blockCor, gekm)
+S3method(blockCor, default)
+S3method(model.matrix, gekm)
+S3method(derivModelMatrix, gekm)
+S3method(derivModelMatrix, default)
