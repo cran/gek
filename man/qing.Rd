@@ -47,6 +47,11 @@ Jamil, M. and Yang, X.-S. (2013). A Literature Survey of Benchmark Functions for
 Carmen van Meegen
 }
 
+\seealso{
+\code{\link{testfunctions}} for further test functions.
+}
+
+
 \examples{
 # 1-dimensional Qing function with tangents
 curve(qing(x), from = -1.7, to = 1.7)

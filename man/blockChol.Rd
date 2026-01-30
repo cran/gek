@@ -17,7 +17,7 @@ blockChol(K, R = NULL, S = NULL, tol = NULL)
 	a real symmetric positive-definite square submatrix.
 }
   \item{R}{
-	an (optinal) rectangular submatrix.
+	an (optional) rectangular submatrix.
 }
   \item{S}{
 	an (optional) real symmetric positive-definite square submatrix.

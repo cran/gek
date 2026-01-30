@@ -18,7 +18,7 @@ gekm(formula, data, deriv, covtype = c("matern5_2", "matern3_2", "gaussian"),
 	lower = NULL, upper = NULL, start = NULL, ncalls = 20, control = NULL,
 	model = TRUE, x = FALSE, y = FALSE, dx = FALSE, dy = FALSE, \dots)
 	
-\method{print}{gekm}(x, digits = 4L, \dots)
+\method{print}{gekm}(x, digits = 4L, scale = FALSE, \dots)
 }
 
 \arguments{
@@ -35,7 +35,7 @@ a \code{\link{data.frame}} with named columns of \code{n} training points of dim
 an optional \code{\link{data.frame}} with the derivatives, whose columns should be named like those of \code{data}. If not specified, a Kriging model without derivatives is estimated.
 }
   \item{covtype}{
-a \code{\link{character}} to specify the covariance structure to be used. One of \code{matern5_2}, \code{matern3_2} or \code{gaussian}. Default is \code{matern5_2}.
+a \code{\link{character}} to specify the correlation structure to be used. One of \code{matern5_2}, \code{matern3_2} or \code{gaussian}. Default is \code{matern5_2}, see \code{\link{blockCor}} for details.
 }
   \item{theta}{
 a \code{\link{numeric}} vector of length \code{d} for the hyperparameters (optional). If not given, hyperparameters will be estimated via maximum likelihood.
@@ -76,29 +76,31 @@ a \code{\link{list}} of control parameters for the optimization routine. See \co
   \item{dy}{
 \code{\link{logical}}. Should the derivatives of the response be returned? Default is \code{FALSE}.
 }
+  \item{\dots}{
+further arguments, currently not used.
+}
   \item{digits}{
 number of digits to be used for the \code{print} method.
 }
-	\item{\dots}{
-further arguments, currently not used.
+  \item{scale}{
+\code{\link{logical}}. Should the estimated process standard deviation be scaled? Default is \code{FALSE}, see \code{\link{sigma.gekm}} for details.
 }}
 
 \details{
-
 Parameter estimation is performed via maximum likelihood.
 The \code{optimizer} argument can be used to select one of the optimization algorithms \code{"NMBK"} or \code{"L-BFGS-B"}.
-In the case of the \code{"L-BFGS-B"}, analytical gradients of the \dQuote{concentrated} log likelihood are used.
+In the case of the \code{"L-BFGS-B"}, analytical gradients of the \dQuote{concentrated} log-likelihood are used.
 For one-dimensional problems, \code{\link{optimize}} is called and the algorithm selected via \code{optimizer} is ignored.
 }
 
 \value{
-\code{gekm} returns an object of \code{\link{class}} \code{"gekm"} whose underlying structure is a list containing at least the following components:
+\code{gekm} returns an object of \code{\link{class}} \code{"gekm"} whose underlying structure is a list containing the following components:
 
 \item{coefficients}{
 the estimated regression coefficients.
 }
   \item{sigma}{
-the estimated process standard deviation.
+the estimated (unscaled) process standard deviation.
 }
   \item{theta}{
 the (estimated) correlation parameters.
@@ -116,10 +118,10 @@ the optimization algorithm.
 the convergence code.
 }
   \item{message}{
-information from the optimizer.
+information from the \code{optimizer}.
 }
   \item{logLik}{
-the value of the negative \dQuote{concentrated} log likelihood at the estimated parameters.
+the value of the negative \dQuote{concentrated} log-likelihood at the estimated parameters.
 }
   \item{derivatives}{
 \code{TRUE} if a gradient-enhanced Kriging model was adapted, otherwise \code{FALSE}.
@@ -129,6 +131,9 @@ the \code{\link{data.frame}} that was specified via the \code{data} argument.
 }
   \item{deriv}{
 if \code{derivatives = TRUE}, the \code{\link{data.frame}} with the derivatives that was specified via the \code{deriv} argument.
+}
+  \item{nobs}{
+the number of observations used to fit the model.
 }
   \item{call}{
 the matched call.
@@ -148,7 +153,7 @@ if requested, the response vector.
   \item{dx}{
 if requested, the derivatives of the model matrix.
 }
-  \item{dx}{
+  \item{dy}{
 if requested, the vector of derivatives of the response.
 }
 }
@@ -186,6 +191,7 @@ Santner, T. J., Williams, B. J., and Notz, W. I. (2018). \emph{The Design and An
 
 Stein, M. L. (1999). \emph{Interpolation of Spatial Data: Some Theory for Kriging}. Springer Series in Statistics. Springer-Verlag. \doi{10.1007/978-1-4612-1494-6}.
 
+Zimmermann, R. (2015). On the Condition Number Anomaly of Gaussian Correlation Matrices. \emph{Linear Algebra and its Applications}, \bold{466}:512-–526. \doi{10.1016/j.laa.2014.10.038}.
 }
 
 
@@ -195,6 +201,10 @@ Carmen van Meegen
 
 \seealso{
 \code{\link{predict.gekm}} for prediction at new data points based on a model of class \code{"gekm"}.
+
+\code{\link{plot.gekm}} for the plot method of a model of class \code{"gekm"}.
+
+\code{\link{summary.gekm}} for a summary of a model of class \code{"gekm"}.
 
 \code{\link{simulate.gekm}} for simulation of process paths conditional on a model of class \code{"gekm"}.
 }
@@ -277,7 +287,7 @@ mod
 
 ## Compare results with Morris et al. (1993):
 
-# Estimated hyperparameters
+# Estimated correlation parameters
 # in Morris et al. (1993): 0.429 and 0.467
 1 / (2 * mod$theta^2)
 # Estimated intercept
@@ -285,11 +295,11 @@ mod
 coef(mod)
 # Estimated standard deviation
 # in Morris et al. (1993): 135.47
-mod$sigma
-# Posterior mean and standard deviation at (0.5, 0.5)
+sigma(mod)
+# Predicted mean and standard deviation at (0.5, 0.5)
 # in Morris et al. (1993): 69.4 and 2.7
 predict(mod, data.frame("r_w" = 0.5, "K_w" = 0.5))
-# Posterior mean and standard deviation at (1, 1)
+# Predicted mean and standard deviation at (1, 1)
 # in Morris et al. (1993): 230.0 and 19.2
 predict(mod, data.frame("r_w" = 1, "K_w" = 1))
 
@@ -299,7 +309,7 @@ predict(mod, data.frame("r_w" = 1, "K_w" = 1))
 n_grid <- 21
 x <- seq(0, 1, length.out = n_grid)
 grid <- expand.grid("r_w" = x, "K_w" = x)
-pred <- predict(mod, grid)
+pred <- predict(mod, grid, sd.fit = FALSE)
 
 # Compute ground truth on (transformed) grid
 newdata <- data.frame("r_w" = grid[ , "r_w"], 
@@ -311,7 +321,7 @@ truth <- borehole(newdata)
 
 # Contour plots of predicted and actual output
 par(mfrow = c(1, 2), oma = c(3.5, 3.5, 0, 0.2), mar = c(0, 0, 1.5, 0))
-contour(x, x, matrix(pred$fit, nrow = n_grid, ncol = n_grid, byrow = TRUE),
+contour(x, x, matrix(pred, nrow = n_grid, ncol = n_grid, byrow = TRUE),
 	levels = c(seq(10, 50, 10), seq(100, 250, 50)),
 	main = "Predicted output")
 points(design[ , c("K_w", "r_w")], pch = 16)

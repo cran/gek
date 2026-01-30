@@ -48,13 +48,25 @@ Surjanovic, S. and Bingham, D. (2013). Virtual Library of Simulation Experiments
 Carmen van Meegen
 }
 
+
+\seealso{
+\code{\link{testfunctions}} for further test functions.
+}
+
+
+
 \examples{
-# Contour plot of Rosenbrock's banana function 
+# Contour plot of Rosenbrock's banana function with gradient field
 n.grid <- 50
-x1 <- seq(-2, 2, length.out = n.grid)
-x2 <- seq(-1, 3, length.out = n.grid)
+x1 <- seq(-2, 2, length = n.grid)
+x2 <- seq(-1, 3, length = n.grid)
 y <- outer(x1, x2, function(x1, x2) banana(cbind(x1, x2)))
 contour(x1, x2, y, xaxs = "i", yaxs = "i", nlevels = 25, xlab = "x1", ylab = "x2")
+
+x <- expand.grid(seq(-2, 2, length = 25), seq(-1, 3, length = 25))
+gradient <- bananaGrad(x)
+vectorfield(x, gradient, col = 4, scale = 1)
+vectorfield(x, gradient, col = 4, scale = 1, max.len = 0.2)
 
 # Perspective plot of Rosenbrock's banana function
 col.pal <- colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan", "#7FFF7F", "yellow",

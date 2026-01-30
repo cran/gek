@@ -3,7 +3,7 @@
 ###                                                             ###
 
 
-derivModelMatrix <- function(object, ...) UseMethod("derivModelMatrix", object)
+derivModelMatrix <- function(object, ...) UseMethod("derivModelMatrix")
 
 ## derivModelMatrix.default - determine the derivatives of a model matrix
 ## 
@@ -81,8 +81,6 @@ derivModelMatrix.default <- function(object, data, ...){
 ##
 ## @output:
 ##		derivatives of the model matrix
-
-
 
 derivModelMatrix.gekm <- function(object, ...){
 

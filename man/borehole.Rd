@@ -27,7 +27,7 @@ The borehole function calculates the water flow rate \eqn{\rm [m^3/yr]} through 
 \tabular{lrrl}{
 	Input \tab Domain \tab Distribution \tab Description \cr
 	\eqn{r_w} \tab \eqn{[0.05, 0.15]} \tab \eqn{\mathcal{N}(0.1, 0.0161812)} \tab radius of borehole in \eqn{\rm m} \cr
-	\eqn{r} \tab \eqn{[100, 50\,000]} \tab \eqn{\mathcal{LN}(7.71, 1.0056)} \tab radius of influence in \eqn{\rm m} \cr
+	\eqn{r} \tab \eqn{[100, 50000]} \tab \eqn{\mathcal{LN}(7.71, 1.0056)} \tab radius of influence in \eqn{\rm m} \cr
 	\eqn{T_u} \tab \eqn{[63070, 115600]} \tab \eqn{\mathcal{U}(63070, 115600)} \tab transmissivity of upper aquifer in \eqn{\rm m^2/yr} \cr
 	\eqn{H_u} \tab \eqn{[990, 1100]} \tab \eqn{\mathcal{U}(990, 1110)} \tab potentiometric head of upper aquifer in \eqn{\rm m} \cr
 	\eqn{T_l} \tab \eqn{[63.1, 116]} \tab \eqn{\mathcal{U}(63.1, 116)} \tab transmissivity of lower aquifer in \eqn{\rm m^2/yr} \cr
@@ -60,6 +60,8 @@ Carmen van Meegen
 
 \seealso{
 \code{\link{gekm}} for another example.
+
+\code{\link{testfunctions}} for further test functions.
 }
 
 

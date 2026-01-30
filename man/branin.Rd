@@ -44,15 +44,23 @@ Surjanovic, S. and Bingham, D. (2013). Virtual Library of Simulation Experiments
 Carmen van Meegen
 }
 
+\seealso{
+\code{\link{testfunctions}} for further test functions.
+}
 
 
 \examples{
 # Contour plot of Branin-Hoo function 
-n.grid <- 50
+n.grid <- 21
 x1 <- seq(-5, 10, length.out = n.grid)
 x2 <- seq(0, 15, length.out = n.grid)
 y <- outer(x1, x2, function(x1, x2) branin(cbind(x1, x2)))
-contour(x1, x2, y, xaxs = "i", yaxs = "i", nlevels = 25, xlab = "x1", ylab = "x2")
+contour(x1, x2, y, #asp = 1, #xaxs = "i", yaxs = "i",
+ nlevels = 25, xlab = "x1", ylab = "x2")#, xlim = c(-5.5, 10), ylim = c(-0.1, 15))
+
+x <- expand.grid(seq(-5, 10, length = n.grid), seq(0, 15, length = n.grid))
+gradients <- braninGrad(x)
+vectorfield(x, gradients, col = 4)
 
 # Perspective plot of Branin-Hoo function
 col.pal <- colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan", "#7FFF7F", "yellow",

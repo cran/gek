@@ -63,3 +63,7 @@ Tatang, M. A., Pan, W., Prinn, R. G., and McRae, G. J. (1997). An Efficient Meth
 Carmen van Meegen
 }
 
+\seealso{
+\code{\link{testfunctions}} for further test functions.
+}
+

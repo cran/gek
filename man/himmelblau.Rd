@@ -49,6 +49,10 @@ Surjanovic, S. and Bingham, D. (2013). Virtual Library of Simulation Experiments
 Carmen van Meegen
 }
 
+\seealso{
+\code{\link{testfunctions}} for further test functions.
+}
+
 \examples{
 # Contour plot of Himmelblau's function 
 n.grid <- 50

@@ -32,7 +32,7 @@ blockChol <- function(K, R = NULL, S = NULL, tol = NULL){
 	}
 	
 	## Cholesky decomposition of K
-	L <- chol(K + diag(rep(eps, nrow(K))))
+	L <- chol(K + diag(eps, nrow(K)))
 	# K == t(L) %*% L
 			
 	## with derivatives
@@ -40,10 +40,10 @@ blockChol <- function(K, R = NULL, S = NULL, tol = NULL){
 	
 		Q <- backsolve(L, t(R), transpose = TRUE)
 		## Schur complement
-		N <- S - t(Q) %*% Q
+		N <- S - crossprod(Q)
 		
 		## Cholesky decomposition of the Schur complement
-		M <- chol(N + diag(rep(eps, nrow(S))))
+		M <- chol(N + diag(eps, nrow(S)))
 		# N == t(M) %*% M
 		
 	## without derivatives

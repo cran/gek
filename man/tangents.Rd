@@ -30,6 +30,10 @@ tangents(x, y, slope, length = 1, \dots)
 The length of the tangent lines is scaled according to the current aspect ratio of the existing plot.
 }
 
+\references{
+Oakley, J. and O'Hagan, A. (2002). Bayesian Inference for the Uncertainty Distribution of Computer Model Outputs. \emph{Biometrika}, \bold{89}(4):769--784. \doi{10.1093/biomet/89.4.769}.
+}
+
 \author{
 Carmen van Meegen
 }

@@ -2,7 +2,21 @@
 ###						TANGENTS-FUNCTION	     	 	        ###
 ###                                                             ###
 
-### Function for drawing tangent lines to an existing plot 
+## tangents - drawing tangent lines to an existing plot
+## 
+## @param x: num[n]
+##		numeric vector with x-coordinates
+## @param y: num[n] 
+##		numeric vector with y-coordinates
+## @param slope: num[n]
+##		numeric vector with slopes at x
+## @param length: num[1]
+##		scaling factor for the length of the tangents to be drawn
+## @param ...:
+##		further arguments to be passed to segments()
+##
+## @output:
+##		invisible(NULL)
 
 tangents <- function(x, y, slope, length = 1, ...){
 

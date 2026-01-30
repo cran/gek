@@ -4,14 +4,15 @@
 \alias{predict.gekm}
 
 \title{
-Predict Method for (Gradient-Enhanced) Kriging Model Fits
+Predict Method for a gekm Object
 }
 \description{
-Predicted values and standard deviations based on a \code{gekm} model.
+Predicted values, standard deviations and confidence intervals based on a \code{gekm} object.
 }
 
 \usage{
-\method{predict}{gekm}(object, newdata, \dots)
+\method{predict}{gekm}(object, newdata, sd.fit = TRUE, scale = FALSE, df = NULL, 
+	interval = c("none", "confidence"), level = 0.95, \dots)
 }
 
 \arguments{
@@ -21,14 +22,47 @@ an object of class \code{"gekm"}.
   \item{newdata}{
 a \code{\link{data.frame}} containing the points where to perform predictions. 
 }
+  \item{sd.fit}{
+\code{\link{logical}}. Should the standard deviation of the prediction, i.e., the root mean squared error, be computed? Default is \code{TRUE}.
+}
+  \item{scale}{
+\code{\link{logical}}. Should the estimated process variance be scaled? Default is \code{FALSE}, see \code{\link{sigma.gekm}} for details.
+}
+  \item{df}{
+degrees of freedom of the \eqn{t} distribution. Default is \code{NULL}, see \sQuote{Details}.
+}
+  \item{interval}{
+a \code{\link{character}} that specifies the type of interval calculation. Default is \code{"none"}.
+}
+  \item{level}{
+confidence level for calculating confidence intervals. Default is \code{0.95}.
+}
   \item{\dots}{
 further arguments, currently not used.
 }
 }
 
+\details{
+Confidence intervals for the predicted values are constructed using the \eqn{\frac{1 - \code{level}}{2}}-quantile of the \eqn{t} distribution with \code{df} degrees of freedom.
+This is based on the assumption that the correlation parameters are known. 
+If estimated correlation parameters are used, confidence intervals can be misleading.
+
+By default \code{df = NULL}, in which case the degrees of freedom are determined by \code{nobs - p}, 
+where \code{nobs} is the total number of observations used to fit the model and \code{p} is the number of regression coefficients.
+Note for a Kriging model \code{nobs = n}, with \code{n} being the number of response values,
+while for a gradient-enhanced Kriging model \code{nobs = n + n * d}, where \code{d} is the number of inputs.
+
+In practice, the quantile of the standard normal distribution is often used instead of the quantile of the \eqn{t} distribution to calculate confidence intervals,
+even though the process variance \eqn{\sigma^2} is estimated and regardless of whether estimated correlation parameters are plugged in.
+This can be obtained by setting \code{df = Inf}.
+}
+
 \value{
-  \item{fit}{predicted mean computed at newdata.}
-  \item{sd.fit}{predicted standard deviation of predicted mean.}
+The \code{predict} method of \code{"gekm"} returns a \code{\link{vector}} of predictions computed for the inputs in \code{newdata}, if \code{sd.fit = FALSE} and \code{interval = "none"}.
+Setting \code{sd.fit = FALSE} and \code{interval = "confidence"} generates a \code{\link{matrix}} with the predicted values and the lower and upper limits of the confidence intervals.
+In case \code{sd.fit = TRUE}, a \code{\link{list}} with the following components is returned:
+  \item{fit}{either a \code{\link{vector}} or a \code{\link{matrix}}, as described above.}
+  \item{sd.fit}{predicted standard deviation of predicted means.}
 }
 
 
@@ -70,7 +104,6 @@ Stein, M. L. (1999). \emph{Interpolation of Spatial Data: Some Theory for Krigin
 Carmen van Meegen
 }
 
-
 \seealso{
 \code{\link{gekm}} for fitting a (gradient-enhanced) Kriging model.
 
@@ -92,48 +125,48 @@ dy <- fGrad(x)
 dat <- data.frame(x, y)
 deri <- data.frame(x = dy)
 
-# Fit Kriging model
+# Fit (gradient-enhanced) Kriging model
 km.1d <- gekm(y ~ x, data = dat, covtype = "gaussian", theta = 1)
-
-# Fit gradient-enhanced Kriging model
 gekm.1d <- gekm(y ~ x, data = dat, deriv = deri, covtype = "gaussian", theta = 1)
 
-# Generate new data for prediction
-newdat <- data.frame(x = seq(-6, 6, length = 100))
+# Generate new data
+newdat <- data.frame(x = seq(-6, 6, length = 10))
 
-# Prediction for both models
-pred.km.1d <- predict(km.1d, newdat)
-pred.gekm.1d  <- predict(gekm.1d, newdat)
+# Compute predictions 
+predict(gekm.1d, newdat, sd.fit = FALSE)
+predict(gekm.1d, newdat)
+predict(gekm.1d, newdat, sd.fit = TRUE, scale = TRUE)
+predict(gekm.1d, newdat, sd.fit = FALSE, interval = "confidence")
+predict(gekm.1d, newdat, sd.fit = FALSE, df = Inf, interval = "confidence")
+predict(gekm.1d, newdat, sd.fit = FALSE, scale = TRUE, interval = "confidence")
 
-# Draw curves
-curve(f(x), from = -6, to = 6, lwd = 2)
-lines(newdat$x, pred.km.1d$fit, type = "l", col = rgb(0.5, 0.5, 0.5), lwd = 2, lty = 2)
-lines(newdat$x, pred.gekm.1d$fit, type = "l", col = rgb(0, 0.5, 1), lwd = 2, lty = 2)
+# Plot predictions and confidence intervals
+newdat <- data.frame(x = seq(-6, 6, length = 500))
+pred.km.1d <- predict(km.1d, newdat, sd.fit = FALSE, interval = "confidence", scale = TRUE)
+pred.gekm.1d  <- predict(gekm.1d, newdat, sd.fit = FALSE, interval = "confidence", scale = TRUE)
 
-# Add pointswise confidence intervals
-lower.km.1d <- pred.km.1d$fit - qnorm(0.975) * pred.km.1d$sd
-upper.km.1d <- pred.km.1d$fit + qnorm(0.975) * pred.km.1d$sd
-lower.gekm.1d <- pred.gekm.1d$fit - qnorm(0.975) * pred.gekm.1d$sd
-upper.gekm.1d <- pred.gekm.1d$fit + qnorm(0.975) * pred.gekm.1d$sd
- 
-polygon(c(newdat$x, rev(newdat$x)),	c(lower.km.1d, rev(upper.km.1d)),
-	col = rgb(0.5, 0.5, 0.5, alpha = 0.1), border = NA)
-polygon(c(newdat$x, rev(newdat$x)),	c(lower.gekm.1d, rev(upper.gekm.1d)),
-	col = rgb(0, 0.5, 1, alpha = 0.1), border = NA)
-
-# Add tangent lines and observations
-tangents(x, y, dy, lwd = 2, col = "red")
+par(mfrow = c(1, 2), oma = c(3.5, 3.5, 0, 0.2), mar = c(0, 0, 1.5, 0))
+ylim <- range(pred.km.1d, pred.gekm.1d)
+curve(f(x), from = -6, to = 6, ylim = ylim, main = "Kriging")
+matplot(newdat$x, pred.km.1d, xlab = "x", ylab = "f(x)",
+	type = "l", lty = 1, col = c(4, 8, 8),
+	add = TRUE)
 points(x, y, pch = 16)
 
-# Add legend
-legend("topleft", lty = c(1, 2, 2), col = c("black", rgb(0.5, 0.5, 0.5), rgb(0, 0.5, 1)),
-	legend = c("Test function", "Kriging", "GEK"), lwd = 2, bty = "n")
+curve(f(x), from = -6, to = 6, ylim = ylim, yaxt = "n", main = "GEK")
+matplot(newdat$x, pred.gekm.1d, xlab = "x", ylab = "f(x)",
+	type = "l", lty = 1, col = c(3, 8, 8),
+	add = TRUE)
+points(x, y, pch = 16)
+tangents(x, y, dy, col = 2, length = 2)
 
+mtext(side = 1, outer = TRUE, line = 2.5, "x")
+mtext(side = 2, outer = TRUE, line = 2.5, "f(x)")
 
 ## 2-dimensional example: Branin-Hoo function
 
 # Generate a grid for training
-n <- 5
+n <- 4
 x1 <- seq(-5, 10, length = n)
 x2 <- seq(0, 15, length = n)
 x <- expand.grid(x1 = x1, x2 = x2)
@@ -142,13 +175,9 @@ dy <- braninGrad(x)
 dat <- data.frame(x, y)
 deri <- data.frame(dy)
 
-# Fit Kriging model
+# Fit (gradient-enhanced) Kriging model
 km.2d <- gekm(y ~ ., data = dat)
-km.2d
-
-# Fit gradient-enhanced Kriging model
 gekm.2d <- gekm(y ~ ., data = dat, deriv = deri)
-gekm.2d
 
 # Generate new data for prediction
 n.grid <- 50

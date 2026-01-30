@@ -45,6 +45,8 @@ gekm.fit <- function(x, y, dx, dy, X, covtype = c("matern5_2", "matern3_2", "gau
 		optimizer <- NULL
 		convergence <- NULL
 		message <- NULL
+		logLik <- logLikFun(param = theta, object = X, x = x, y = y, dx = dx, dy = dy,
+			covtype = covtype, tolerance = tol)
 
 	}else{
 	
@@ -55,11 +57,12 @@ gekm.fit <- function(x, y, dx, dy, X, covtype = c("matern5_2", "matern3_2", "gau
 			
 			opts <- optimise(logLikFun,	lower = lower, upper = upper,
 						x = x, y = y, dx = dx, dy = dy, 
-						X = X, covtype = covtype, tolerance = tol)
+						object = X, covtype = covtype, tolerance = tol)
 			theta <- opts$minimum
 			optimizer <- "Brent"
 			convergence <- 0L
 			message <- NULL
+			logLik <- opts$objective
 			
 		}else{
 		
@@ -76,7 +79,7 @@ gekm.fit <- function(x, y, dx, dy, X, covtype = c("matern5_2", "matern3_2", "gau
 				"NMKB" = nmkb)
 			
 			argList <- list(fn = logLikFun, lower = lower, upper = upper,
-				x = x, y = y, dx = dx, dy = dy, X = X, covtype = covtype,
+				x = x, y = y, dx = dx, dy = dy, object = X, covtype = covtype,
 				tolerance = tol, control = control)
 						
 			if(optimizer == "L-BFGS-B") argList <- c(argList, method = "L-BFGS-B", gr = logLikGrad, envir = new.env())
@@ -86,7 +89,7 @@ gekm.fit <- function(x, y, dx, dy, X, covtype = c("matern5_2", "matern3_2", "gau
 			})
 			
 			failed <- sapply(res, inherits, "try-error")
-			if(all(failed)) stop("maximum likelihood estimation failed,`try to specify argument 'tol'")
+			if(all(failed)) stop("maximum likelihood estimation failed, try to specify argument 'tol'")
 			else res <- res[!failed]
 			
 			converged <- sapply(res, function(x) x$convergence) == 0
@@ -96,6 +99,7 @@ gekm.fit <- function(x, y, dx, dy, X, covtype = c("matern5_2", "matern3_2", "gau
 			theta <- opts$par
 			convergence <- opts$convergence
 			message <- opts$message
+			logLik <- opts$value
 					
 		}
 	}
@@ -111,9 +115,9 @@ gekm.fit <- function(x, y, dx, dy, X, covtype = c("matern5_2", "matern3_2", "gau
 	
 	## with derivatives
 	if(derivatives){
-		dw <- backsolve(corChol$M, c(dy - t(corChol$Q) %*% w), transpose = TRUE)
+		dw <- backsolve(corChol$M, c(dy - crossprod(corChol$Q, w)), transpose = TRUE)
 		w <- c(w, dw)
-		dA <- backsolve(corChol$M, dx - t(corChol$Q) %*% A, transpose = TRUE)
+		dA <- backsolve(corChol$M, dx - crossprod(corChol$Q, A), transpose = TRUE)
 		A <- rbind(A, dA)		
 		const <- nrow(X) * (ncol(X) + 1L)
 	# without derivatives
@@ -125,12 +129,10 @@ gekm.fit <- function(x, y, dx, dy, X, covtype = c("matern5_2", "matern3_2", "gau
 	names(coef) <- colnames(x)
 
 	Q <- qr.Q(qr(A))
-	U <- Q %*% t(Q)
+	U <- tcrossprod(Q)
 	z <- w - U %*% w
 	sigma <- sqrt(drop(crossprod(z)) / const)	
 	
-	logLik <- logLikFun(theta, x, y, dx, dy, X, covtype, tol)
-
 	res <- list("coefficients" = coef,
 			"sigma" = sigma,
 			"theta" = theta,
@@ -141,5 +143,6 @@ gekm.fit <- function(x, y, dx, dy, X, covtype = c("matern5_2", "matern3_2", "gau
 			"message" = message,
 			"logLik" = logLik)
 	
+	res
 }
 

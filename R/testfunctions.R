@@ -1,5 +1,5 @@
 ###                                                             ###
-###					2-DIMENSIONAL TESTFUNCTIONS	     	        ###
+###					2-DIMENSIONAL TEST FUNCTIONS     	        ###
 ###                                                             ###
 
 
@@ -134,7 +134,7 @@ himmelblauGrad <- function(x){
 
 
 ###                                                             ###
-###				MULTIDIMENSIONAL TESTFUNCTIONS	     	        ###
+###				MULTIDIMENSIONAL TEST FUNCTIONS	     	        ###
 ###                                                             ###
 
 
@@ -145,7 +145,8 @@ himmelblauGrad <- function(x){
 ## at x = (1, ..., 1) 
 
 banana <- function(x){
-	if(is.vector(x)) stop("Rosenbrock-Banana function is only defined for dimensions > 1")	
+	if(is.vector(x))
+		stop("Rosenbrock-Banana function is only defined for dimensions > 1")	
 
 	d <- ncol(x)	
 	
@@ -339,7 +340,7 @@ griewankGrad <- function(x){
 
 
 ###                                                             ###
-###					UNCERTAINTY TESTFUNCTIONS	     	        ###
+###					UNCERTAINTY TEST FUNCTIONS	     	        ###
 ###                                                             ###
 
 

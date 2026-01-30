@@ -3,7 +3,7 @@
 ###           CORRELATIONMATIX WITH DERIVATIVES		 	        ###
 ###                                                             ###
 
-blockCor <- function(x, ...) UseMethod("blockCor", x)
+blockCor <- function(x, ...) UseMethod("blockCor")
 
 
 ## blockCor - calculates block correlation matrix with or 

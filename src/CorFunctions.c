@@ -219,7 +219,10 @@ void corMat_dxdy_all(const double *x, const int *n, const int *d, const double *
 		for(int k = 0; k < *d; k++){
 			for(int j = 0; j < i; j++){
 				for(int l = 0; l < k; l++){	
-					ans[(k + *d * i) * *n * *d + j * *d + l] = ans[(l + *d * j) * *n * *d + i * *d + k] = ans[(l + *d * i) * *n * *d + j * *d + k] = ans[(k + *d * j) * *n * *d + i * *d + l] = 
+					ans[(k + *d * i) * *n * *d + j * *d + l] = 
+					ans[(l + *d * j) * *n * *d + i * *d + k] = 
+					ans[(l + *d * i) * *n * *d + j * *d + k] = 
+					ans[(k + *d * j) * *n * *d + i * *d + l] = 
 					(*corFun_dxdy)(x, n, x, n, &i, &j, param, &k, &l, C);
 				}
 				ans[(k + *d * i) * *n * *d + j * *d + k] = ans[(k + *d * j) * *n * *d + i * *d + k] = (*corFun_dxdy)(x, n, x, n, &i, &j, param, &k, &k, C);
@@ -241,8 +244,11 @@ void corMat2_dxdy_all(const double *x1, const int *n1, const double *x2, const i
 	for(int i1 = 0; i1 < *n1; i1++){
 		for(int k = 0; k < *d; k++){
 			for(int i2 = 0; i2 < *n2; i2++){
-				for(int l = 0; l < *d; l++){	
-					ans[(k + *d * i1) * *n1 * *d + i2 * *d + l] = ans[(l + *d * i2) * *n1 * *d + i1 * *d + k] = ans[(l + *d * i1) * *n1 * *d + i2 * *d + k] = ans[(k + *d * i2) * *n1 * *d + i1 * *d + l] = 
+				for(int l = 0; l < k; l++){	
+					ans[(k + *d * i1) * *n1 * *d + i2 * *d + l] = 
+					ans[(l + *d * i2) * *n1 * *d + i1 * *d + k] = 
+					ans[(l + *d * i1) * *n1 * *d + i2 * *d + k] = 
+					ans[(k + *d * i2) * *n1 * *d + i1 * *d + l] = 
 					(*corFun_dxdy)(x1, n1, x2, n2, &i1, &i2, param, &k, &l, C);
 				}
 				ans[(k + *d * i1) * *n1 * *d + i2 * *d + k] = ans[(k + *d * i2) * *n1 * *d + i1 * *d + k] = (*corFun_dxdy)(x1, n1, x2, n2, &i1, &i2, param, &k, &k, C);
@@ -295,7 +301,7 @@ void corMat_dp(const double *X, const int *n, const double *param, const char **
 		for (int j = 0; j < i; j++) {
 			ans[j + *n * i] = ans[i + *n * j] = (*corFun_dp)(X, n, &i, &j, param, k, C);
 		}
-		ans[i + *n * i] = 0;
+		ans[i + *n * i] = 0.;
 	}
 }
 
@@ -357,7 +363,7 @@ void corMat_dxdp(const double *X, const int *n, const int *d, const double *para
 				ans[k + *d * (j + *n * i)] = (*corFun_dxdp)(X, n, d, &i, &j, param, &k, m, D);
 				ans[k + *d * (i + *n * j)] = -ans[k + *d * (j + *n * i)];
 			}
-			ans[k + *d * (i + *n * i)] = 0;
+			ans[k + *d * (i + *n * i)] = 0.;
 		}
 	}
 }

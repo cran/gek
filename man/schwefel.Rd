@@ -45,6 +45,8 @@ Carmen van Meegen
 }
 
 \seealso{
+\code{\link{testfunctions}} for further test functions.
+
 \code{\link{tangents}} for drawing tangent lines.
 }
 

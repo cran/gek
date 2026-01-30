@@ -3,13 +3,13 @@
 \name{testfunctions}
 \alias{testfunctions}
 
-\title{Testfunctions in \pkg{gek}}
+\title{Test Functions in \pkg{gek}}
 
 \description{
-Overview of testfunctions available in \pkg{gek}.
+Overview of test functions and their associated gradients available in \pkg{gek}.
 }
 
-\section{2-dimensional testfunctions for optimization}{
+\section{2-dimensional test functions for optimization}{
 \itemize{
 \item{\code{\link{branin}}: Branin-Hoo function}
 \item{\code{\link{camel3}}: Three-hump camel function}
@@ -18,7 +18,7 @@ Overview of testfunctions available in \pkg{gek}.
 }
 }
 
-\section{Multi-dimensional testfunctions for optimization}{
+\section{Multi-dimensional test functions for optimization}{
 \itemize{
 \item{\code{\link{banana}}: Rosenbrock's Banana function}
 \item{\code{\link{cigar}}: Bent Cigar function}
@@ -31,7 +31,7 @@ Overview of testfunctions available in \pkg{gek}.
 }	
 }
 
-\section{Testfunctions for uncertainty quantification}{
+\section{Test functions for uncertainty quantification}{
 \itemize{
 \item{\code{\link{borehole}}: Borehole function}
 \item{\code{\link{steel}}: Steel column function}
@@ -66,20 +66,20 @@ Carmen van Meegen
 }
 
 \seealso{
-\code{\link{banana}}, \code{\link{bananaGrad}},
-\code{\link{borehole}}, \code{\link{boreholeGrad}},
-\code{\link{branin}}, \code{\link{braninGrad}},
-\code{\link{camel3}}, \code{\link{camel3Grad}},
-\code{\link{camel6}}, \code{\link{camel6Grad}},
-\code{\link{cigar}}, \code{\link{cigarGrad}},
-\code{\link{griewank}}, \code{\link{griewankGrad}},
-\code{\link{himmelblau}}, \code{\link{himmelblauGrad}},
-\code{\link{qing}}, \code{\link{qingGrad}},
-\code{\link{rastrigin}}, \code{\link{rastriginGrad}},
-\code{\link{schwefel}}, \code{\link{schwefelGrad}},
-\code{\link{short}}, \code{\link{shortGrad}},
-\code{\link{sphere}}, \code{\link{sphereGrad}},
-\code{\link{steel}}, \code{\link{steelGrad}},
-\code{\link{styblinski}}, \code{\link{styblinskiGrad}},
-\code{\link{sulfur}}, \code{\link{sulfurGrad}}
+\code{\link{banana}},
+\code{\link{borehole}},
+\code{\link{branin}},
+\code{\link{camel3}},
+\code{\link{camel6}},
+\code{\link{cigar}},
+\code{\link{griewank}},
+\code{\link{himmelblau}},
+\code{\link{qing}},
+\code{\link{rastrigin}},
+\code{\link{schwefel}},
+\code{\link{short}},
+\code{\link{sphere}},
+\code{\link{steel}},
+\code{\link{styblinski}},
+\code{\link{sulfur}}
 }

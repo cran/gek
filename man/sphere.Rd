@@ -45,6 +45,8 @@ Carmen van Meegen
 }
 
 \seealso{
+\code{\link{testfunctions}} for further test functions.
+
 \code{\link{tangents}} for drawing tangent lines.
 }
 
@@ -58,10 +60,18 @@ tangents(x, y, dy, length = 2, lwd = 2, col = "red")
 points(x, y, pch = 16)
 
 # Contour plot of sphere function 
-n.grid <- 50
+n.grid <- 15
 x1 <- x2 <- seq(-5.12, 5.12, length.out = n.grid)
 y <- outer(x1, x2, function(x1, x2) sphere(cbind(x1, x2)))
 contour(x1, x2, y, xaxs = "i", yaxs = "i", nlevels = 25, xlab = "x1", ylab = "x2")
+
+contour(x1, x2, y, #xaxs = "i", yaxs = "i",
+nlevels = 25, xlab = "x1", ylab = "x2")
+
+x <- expand.grid(x1, x2)
+gradient <- sphereGrad(x)
+
+vectorfield(x, gradient, col = 4, scale = 1.1)
 
 # Perspective plot of sphere function
 col.pal <- colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan", "#7FFF7F", "yellow",
